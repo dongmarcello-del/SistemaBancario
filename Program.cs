@@ -1,4 +1,11 @@
+using Microsoft.EntityFrameworkCore;
+using SistemaBancario.Data;
+
 var builder = WebApplication.CreateBuilder(args);
+
+// Passo la stringa di connessione ad AppDbContext
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
