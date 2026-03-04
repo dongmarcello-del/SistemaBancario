@@ -140,3 +140,4 @@ C:\Users\MarcelloDong\SistemaBancario\SistemaBancario\obj\Debug\net10.0\refint\S
 C:\Users\MarcelloDong\SistemaBancario\SistemaBancario\obj\Debug\net10.0\SistemaBancario.pdb
 C:\Users\MarcelloDong\SistemaBancario\SistemaBancario\obj\Debug\net10.0\SistemaBancario.genruntimeconfig.cache
 C:\Users\MarcelloDong\SistemaBancario\SistemaBancario\obj\Debug\net10.0\ref\SistemaBancario.dll
+C:\Users\MarcelloDong\SistemaBancario\SistemaBancario\bin\Debug\net10.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll

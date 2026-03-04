@@ -34,6 +34,8 @@ public class AppDbContext : DbContext
                     .WithMany(a => a.ReceivedTransactions)
                     .HasForeignKey(t => t.ReceiverAccountId)
                     .OnDelete(DeleteBehavior.Restrict); // Blocca la cancellazione di un'account per evitare la cancellazione di account
+        
+        
 
         base.OnModelCreating(modelBuilder);
     }
