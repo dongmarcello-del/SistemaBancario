@@ -6,6 +6,8 @@ using SistemaBancario.Services;
 
 namespace SistemaBancario.Controllers;
 
+// Aggiungere i codici di ritornjo
+
 [ApiController]
 [Route("api/[controller]")]
 public class AuthController : ControllerBase
@@ -29,9 +31,34 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("/register")]
-    public async Task<ResponseMessage<string>> Register(UserDTO user)
+    public async Task<ActionResult<ResponseMessage<string>>> Register(UserDto user)
     {
-        return await _auth.Register(user);
+        try
+        {
+            await _auth.Register(user);
+
+            return Created("", new ResponseMessage<string>
+            {
+                Success = true, 
+                Message = "Utente creato con successo"
+            });
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new ResponseMessage<string>
+            {
+                Success = false, 
+                Message = ex.Message
+            });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Conflict(new ResponseMessage<string>
+            {
+                Success = false, 
+                Message = ex.Message
+            });
+        }
     }
 
     /* Login: 
@@ -39,8 +66,26 @@ public class AuthController : ControllerBase
        - Se il login fallisce da un messaggio di errore
     */
     [HttpPost("/login")]
-    public async Task<ResponseMessage<string>> Login(UserDTO user)
+    public async Task<ActionResult<ResponseMessage<string>>> Login(UserDto user)
     {
-        return await _auth.Login(user);
+        try
+        {
+            var token = await _auth.Login(user);
+
+            return Ok(new ResponseMessage<string>
+            {
+                Success = true,
+                Message = "Utente loggato con successo!",
+                Data = token
+            });
+        } 
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(new ResponseMessage<string>
+            {
+                Success = false, 
+                Message = ex.Message
+            });
+        }
     }
 }

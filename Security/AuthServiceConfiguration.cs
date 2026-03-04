@@ -3,7 +3,7 @@ using SistemaBancario.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
-namespace SistemaBancario.Helpers;
+namespace SistemaBancario.Security;
 
 /*
     Classe helper che configura la validazione nel Program.cs

@@ -11,7 +11,7 @@ namespace SistemaBancario.Validators;
 
 public class UserDataValidator
 {
-    public static ResponseMessage<string>? Validate(UserDTO user)
+    public static ResponseMessage<string>? Validate(UserDto user)
     {
         if (string.IsNullOrWhiteSpace(user.Email) || string.IsNullOrWhiteSpace(user.Password)) return new ResponseMessage<string> {
             Success = false,

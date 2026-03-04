@@ -12,8 +12,8 @@ using SistemaBancario.Data;
 namespace SistemaBancario.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260303160522_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260304154001_BugFix3")]
+    partial class BugFix3
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,8 +31,8 @@ namespace SistemaBancario.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("Balance")
-                        .HasColumnType("int");
+                    b.Property<decimal>("Balance")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
@@ -41,7 +41,10 @@ namespace SistemaBancario.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Accounts");
+                    b.ToTable("Accounts", t =>
+                        {
+                            t.HasCheckConstraint("CK_Account_Balance_Positive", "[Balance] >= 0");
+                        });
                 });
 
             modelBuilder.Entity("SistemaBancario.Models.Transaction", b =>

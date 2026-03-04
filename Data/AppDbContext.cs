@@ -35,7 +35,9 @@ public class AppDbContext : DbContext
                     .HasForeignKey(t => t.ReceiverAccountId)
                     .OnDelete(DeleteBehavior.Restrict); // Blocca la cancellazione di un'account per evitare la cancellazione di account
         
-        
+        // Il balance dell'account può essere solo positivo
+        modelBuilder.Entity<Account>()
+                    .ToTable(tb => tb.HasCheckConstraint("CK_Account_Balance_Positive", "[Balance] >= 0"));
 
         base.OnModelCreating(modelBuilder);
     }

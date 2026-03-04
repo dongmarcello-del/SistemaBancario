@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using SistemaBancario.Models;
 
-namespace SistemaBancario.Helpers;
+namespace SistemaBancario.Security;
 
 /*
     Classe helper per cryptare e decryptare la password

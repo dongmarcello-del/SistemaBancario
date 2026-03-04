@@ -1,4 +1,4 @@
-namespace SistemaBancario.Helpers;
+namespace SistemaBancario.Security;
 
 public class AuthProperties
 {

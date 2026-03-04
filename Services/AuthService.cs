@@ -7,7 +7,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using SistemaBancario.Data;
 using SistemaBancario.DTOs;
-using SistemaBancario.Helpers;
+using SistemaBancario.Security;
 using SistemaBancario.Models;
 using SistemaBancario.Validators;
 
@@ -26,23 +26,21 @@ public class AuthService : IAuthService
         _passwordDecEnc = new PasswordDecEnc();
     }
 
-    public async Task<ResponseMessage<string>> Register(UserDTO user)
+    public async Task Register(UserDto user)
     {
 
-        /* Controlli sulla registrazione lato (non DB) */
+        /* Controlli sulla registrazione lato (dominio) */
 
         var validationError = UserDataValidator.Validate(user);
 
-        if (validationError != null) return validationError;
+        if (validationError != null)
+            throw new ArgumentException(validationError.Message);
 
         /* Controlli sulla registrazione lato (DB) */
-
         var exists = await _dbContext.Users.AnyAsync(u => u.Email == user.Email);
 
-        if (exists) return new ResponseMessage<string> {
-            Success = false, 
-            Message = "L'email già esiste nel database"
-        };
+        if (exists) 
+            throw new InvalidOperationException("Email già registrata");
 
         /* Aggiunta dell'utente */
         await _dbContext.Users.AddAsync(
@@ -54,32 +52,22 @@ public class AuthService : IAuthService
         );
 
         await _dbContext.SaveChangesAsync();
-
-
-        return new ResponseMessage<string>
-        {
-            Success = true, 
-            Message = "Utente creato con successo!"
-        };
     }
 
-    public async Task<ResponseMessage<string>> Login(UserDTO user)
+    public async Task<string> Login(UserDto user)
     {
         // Controlli sul database
         var userLogged = await _dbContext.Users.SingleOrDefaultAsync(u => u.Email == user.Email);
 
-        if (userLogged == null) return new ResponseMessage<string> {
-            Success = false,
-            Message = "Utente non esistente! Prima registrati!"
-        };
+        if (userLogged == null) 
+            throw new UnauthorizedAccessException("Utente non trovato! Prima registrati");
 
 
         // Verifica della password 
         var verifyPwd = _passwordDecEnc.Verify(userLogged, userLogged.Password, user.Password);
-        if (verifyPwd == PasswordVerificationResult.Failed) return new ResponseMessage<string> {
-            Success = false, 
-            Message = "Password incorretta!"
-        };
+
+        if (verifyPwd == PasswordVerificationResult.Failed) 
+            throw new UnauthorizedAccessException("Credenziali non valide");
 
         // Se è necessario un rehash
         if (verifyPwd == PasswordVerificationResult.SuccessRehashNeeded)
@@ -107,10 +95,6 @@ public class AuthService : IAuthService
             signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
         );
 
-        return new ResponseMessage<string> {
-            Success = true, 
-            Message = "Utente registrato con successo!",
-            Data = new JwtSecurityTokenHandler().WriteToken(token)
-        };
+        return new JwtSecurityTokenHandler().WriteToken(token);
     }
 }
