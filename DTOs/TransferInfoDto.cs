@@ -1,5 +1,5 @@
 namespace SistemaBancario.DTOs;
-public class WithdrawInfoDto
+public class TransferInfoDto
 {
     public Guid SenderAccountId { get; set; }
     public Guid ReceiverAccountId { get; set; }

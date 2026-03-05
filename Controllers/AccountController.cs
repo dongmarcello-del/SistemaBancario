@@ -53,7 +53,7 @@ public class AccountController : ControllerBase
 
     [Authorize]
     [HttpPost("/deposit")]
-    public async Task<ActionResult<ResponseMessage<string>>> Deposit(DepositInfoDto depositInfo)
+    public async Task<ActionResult<ResponseMessage<string>>> Deposit(CashOperationInfoDto depositInfo)
     {
         // Prendo i claim dell'utente
         var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
@@ -89,8 +89,89 @@ public class AccountController : ControllerBase
 
     [Authorize]
     [HttpPost("/withdraw")]
-    public async Task<ActionResult<ResponseMessage<string>>> Withdraw(WithdrawInfoDto withdrawInfo)
+    public async Task<ActionResult<ResponseMessage<string>>> Withdraw(CashOperationInfoDto withdrawInfo)
     {
-        throw new NotImplementedException();
+        // Prendo i claim dell'utente
+        var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+        var userClaims = new UserClaims { UserId = Guid.Parse(currentUserId)};
+
+        try
+        {
+            await _service.Withdraw(withdrawInfo, userClaims);
+
+            return Ok(new ResponseMessage<string>()
+            {
+                Success = true,
+                Message = "Prelievo avvenuto con successo!"
+            });
+        }
+        catch (Exception ex) when (ex is InvalidDataException || ex is InvalidOperationException)
+        {
+            return BadRequest(new ResponseMessage<string>()
+            {
+                Success = false,
+                Message = ex.Message
+            });
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new ResponseMessage<string>()
+            {
+                Success = false,
+                Message = ex.Message
+            });
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(new ResponseMessage<string>()
+            {
+                Success = false,
+                Message = ex.Message
+            });
+        }
+    }
+
+    [Authorize]
+    [HttpPost("/transfer")]
+    public async Task<ActionResult<ResponseMessage<string>>> Transfer(TransferInfoDto transferInfo)
+    {
+        // Prendo i claim dell'utente
+        var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+        var userClaims = new UserClaims { UserId = Guid.Parse(currentUserId)};
+
+        try
+        {
+            await _service.Transfer(transferInfo, userClaims);
+
+            return Ok(new ResponseMessage<string>()
+            {
+                Success = true,
+                Message = "Scambio avvenuto con successo!"
+            });
+        }
+        catch (Exception ex) when (ex is InvalidDataException || ex is InvalidOperationException)
+        {
+            return BadRequest(new ResponseMessage<string>()
+            {
+                Success = false,
+                Message = ex.Message
+            });
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new ResponseMessage<string>()
+            {
+                Success = false,
+                Message = ex.Message
+            });
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(new ResponseMessage<string>()
+            {
+                Success = false,
+                Message = ex.Message
+            });
+        }
     }
 }
