@@ -85,14 +85,6 @@ public class AccountController : ControllerBase
                 Message = ex.Message
             });
         }
-        catch (FormatException)
-        {
-            return BadRequest(new ResponseMessage<string>()
-            {
-                Success = false,
-                Message = "Id account non valido!"
-            });
-        }
     }
 
     [Authorize]
@@ -101,10 +93,10 @@ public class AccountController : ControllerBase
     {
         // Prendo i claim dell'utente
         var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+        var userClaims = new UserClaims { UserId = Guid.Parse(currentUserId)};
 
         try
         {
-            var userClaims = new UserClaims { UserId = Guid.Parse(currentUserId)};
             await _service.Withdraw(withdrawInfo, userClaims);
 
             return Ok(new ResponseMessage<string>()
@@ -137,14 +129,6 @@ public class AccountController : ControllerBase
                 Message = ex.Message
             });
         }
-        catch (FormatException)
-        {
-            return BadRequest(new ResponseMessage<string>()
-            {
-                Success = false,
-                Message = "Id account non valido!"
-            });
-        }
     }
 
     [Authorize]
@@ -153,10 +137,10 @@ public class AccountController : ControllerBase
     {
         // Prendo i claim dell'utente
         var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+        var userClaims = new UserClaims { UserId = Guid.Parse(currentUserId)};
 
         try
         {
-            var userClaims = new UserClaims { UserId = Guid.Parse(currentUserId)};
             await _service.Transfer(transferInfo, userClaims);
 
             return Ok(new ResponseMessage<string>()
@@ -195,6 +179,42 @@ public class AccountController : ControllerBase
             {
                 Success = false,
                 Message = "Id account non valido!"
+            });
+        }
+    }
+
+    [Authorize]
+    [HttpGet("/balance")]
+    public async Task<ActionResult<ResponseMessage<decimal>>> GetBalance([FromQuery] GetAccountBalanceDto getAccountBalance)
+    {
+        var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+        var userClaims = new UserClaims { UserId = Guid.Parse(currentUserId)};
+
+        try
+        {
+            var balance = await _service.GetBalance(getAccountBalance, userClaims);
+
+            return Ok(new ResponseMessage<decimal>()
+            {
+                Success = true,
+                Message = "Balance preso con successo!",
+                Data = balance
+            });
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(new ResponseMessage<string>()
+            {
+                Success = false,
+                Message = ex.Message
+            });
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return BadRequest(new ResponseMessage<string>()
+            {
+                Success = false,
+                Message = ex.Message
             });
         }
     }

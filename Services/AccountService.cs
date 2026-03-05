@@ -4,8 +4,16 @@ using SistemaBancario.Models;
 using SistemaBancario.Security;
 using SistemaBancario.Guards;
 using SistemaBancario.Enums;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 
 namespace SistemaBancario.Services;
+
+/*
+    - Solo i servizi lanciano errori, i controller li intercettano e scrivono la risposta
+    - I validatori dei dati dell'utente (che non si interfacciano col DB) ritornano solo ResponseMessage
+    - Mentre i Guards, che fanno validazione 
+*/
 
 public class AccountService : IAccountService
 {
@@ -17,6 +25,7 @@ public class AccountService : IAccountService
         _context = context;
     }
 
+    // Scrittura database
     // Aggiunge un nuovo account all'utente attuale, pure la creazione di un nuovo conto viene considerata transazione a se stesso
     public async Task Add(CreateAccountRequestDto account, UserClaims userClaims)
     {
@@ -97,5 +106,34 @@ public class AccountService : IAccountService
         });
 
         await _context.SaveChangesAsync();
+    }
+
+    // Lettura database
+
+    public async Task<decimal> GetBalance(GetAccountBalanceDto getAccountBalanceDto, UserClaims userClaims)
+    {
+        var accountDesired = await InfoRetrevierGuard.EnsureRetrievable(getAccountBalanceDto, _context, userClaims);
+
+        // Se è null ritorno il balance attuale
+        if (getAccountBalanceDto.Date == null) 
+            return accountDesired.Balance;
+        
+        /// Transazione
+        /// Sender: accountId, Receiver: accountId Amount > 0 Deposito (positivo per accountId)
+        /// Sender: accountId, Receiver: accountId Amount < 0 Prelievo (negativo per accountId)
+        /// Sender: accountId, Receiver: accountId2 Amount > 0 Trasferimento (negativo per accountId)
+        /// Sender: accountId, Receiver: accountId Amount >= 0 Creazione account (ed è la prima transazione) (positivo per accountId)
+        /// Sender: accountId2 Receiver: accountId Amount > 0 Trasferimento (positivo per accountId)
+
+        // Se c'è una data ritorno il balance in quella data
+
+
+        var balance = await _context.Transactions
+                                            .Where(
+                                                t => (t.ReceiverAccountId == getAccountBalanceDto.AccountId 
+                                                || t.SenderAccountId == getAccountBalanceDto.AccountId)
+                                                && t.Date <= getAccountBalanceDto.Date.Value
+                                            ).SumAsync(t => t.ReceiverAccountId == getAccountBalanceDto.AccountId ? t.Amount : -t.Amount);
+        return balance;
     }
 }

@@ -4,20 +4,19 @@ using SistemaBancario.Models;
 using SistemaBancario.Security;
 using SistemaBancario.Enums;
 using Microsoft.EntityFrameworkCore;
+using SistemaBancario.Validators;
 
 namespace SistemaBancario.Guards;
-
-/*
-    Questa classe ritorna gli account se le operazioni sono valide
-*/
 
 public class OperationGuard
 {
     /* Se l'account risulta valido lo ritorna */
     public static async Task<Account> CheckCashOperationValidity(CashOperationInfoDto cashOperation, AppDbContext _context, UserClaims userClaims, CashOperationType cashOperationType)
     {
-        if (cashOperation.Amount <= 0)
-            throw new InvalidDataException("Non puoi prelevare un'ammontare negativo o nullo!");
+        var dataValidationResult = OperationDataValidator.ValidateCashOperation(cashOperation, cashOperationType);
+
+        if (dataValidationResult != null)
+            throw new InvalidOperationException(dataValidationResult.Message);
         
         var account = await _context.Accounts.FindAsync(cashOperation.AccountId);
         if (account == null)
@@ -36,13 +35,10 @@ public class OperationGuard
     /* Se i controlli van bene ritorna i due account */
     public static async Task<(Account senderAccount, Account receiverAccount)> CheckTransferValidity(TransferInfoDto transferInfo, AppDbContext _context, UserClaims userClaims)
     {
-        /* Faccio i controlli */
-        if (transferInfo.Amount <= 0)
-            throw new InvalidDataException("Non puoi trasferire un'ammontare negativo o nullo!");
-        
-        // Non puoi trasferire i soldi ad uno stesso account
-        if (transferInfo.SenderAccountId == transferInfo.ReceiverAccountId)
-            throw new InvalidOperationException("Non puoi trasferire denaro allo stesso account! fai un deposito");
+        var dataValidationResult = OperationDataValidator.ValidateTransfer(transferInfo);
+
+        if (dataValidationResult != null)
+            throw new InvalidOperationException(dataValidationResult.Message);
 
         var accounts = await _context.Accounts
             .Where(a => a.Id == transferInfo.SenderAccountId || a.Id == transferInfo.ReceiverAccountId)

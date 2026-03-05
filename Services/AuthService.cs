@@ -29,7 +29,7 @@ public class AuthService : IAuthService
     public async Task Register(UserDto user)
     {
 
-        /* Controlli sulla registrazione lato (dominio) */
+        /* Controlli sulla registrazione lato (dominio), possono essere trasferiti come guard */
 
         var validationError = UserDataValidator.Validate(user);
 
@@ -56,12 +56,11 @@ public class AuthService : IAuthService
 
     public async Task<string> Login(UserDto user)
     {
-        // Controlli sul database
+        // Controlli sul database (possono essere trasferiti come guard)
         var userLogged = await _dbContext.Users.SingleOrDefaultAsync(u => u.Email == user.Email);
 
         if (userLogged == null) 
             throw new UnauthorizedAccessException("Utente non trovato! Prima registrati");
-
 
         // Verifica della password 
         var verifyPwd = _passwordDecEnc.Verify(userLogged, userLogged.Password, user.Password);

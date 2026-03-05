@@ -4,7 +4,7 @@ public class Transaction
 {
     public int Id { get; set; }
     public decimal Amount { get; set; }
-    public DateTime Date { get; set; } = DateTime.UtcNow;
+    public DateTime Date { get; set; } = DateTime.UtcNow.ToLocalTime();
 
     // Foreign key account (mandante)
     public Guid SenderAccountId { get; set; }

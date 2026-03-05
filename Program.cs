@@ -1,3 +1,4 @@
+using System.Transactions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using SistemaBancario.Data;
@@ -13,6 +14,7 @@ builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(conn
 // Aggiunta dei servizi
 builder.Services.AddAuthServices(builder.Configuration);
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<ITransactionService, TransactionService>();
 
 // Aggiungo nello swagger il bottone per fare le richieste con autenticazione
 builder.Services.AddSwaggerGen(c =>

@@ -3,12 +3,6 @@ using System.Net.Mail;
 
 namespace SistemaBancario.Validators;
 
-/* 
-    Classe che si occupa di gestire la validità delle credenziali dell'utente NON lato database
-
-    Da usare solo nella registrazione
-*/
-
 public class UserDataValidator
 {
     public static ResponseMessage<string>? Validate(UserDto user)
