@@ -57,10 +57,10 @@ public class AccountController : ControllerBase
     {
         // Prendo i claim dell'utente
         var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-        var userClaims = new UserClaims { UserId = Guid.Parse(currentUserId)};
 
         try
         {
+            var userClaims = new UserClaims { UserId = Guid.Parse(currentUserId)};
             await _service.Deposit(depositInfo, userClaims);
 
             return Ok(new ResponseMessage<string>()
@@ -85,6 +85,14 @@ public class AccountController : ControllerBase
                 Message = ex.Message
             });
         }
+        catch (FormatException)
+        {
+            return BadRequest(new ResponseMessage<string>()
+            {
+                Success = false,
+                Message = "Id account non valido!"
+            });
+        }
     }
 
     [Authorize]
@@ -93,10 +101,10 @@ public class AccountController : ControllerBase
     {
         // Prendo i claim dell'utente
         var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-        var userClaims = new UserClaims { UserId = Guid.Parse(currentUserId)};
 
         try
         {
+            var userClaims = new UserClaims { UserId = Guid.Parse(currentUserId)};
             await _service.Withdraw(withdrawInfo, userClaims);
 
             return Ok(new ResponseMessage<string>()
@@ -129,6 +137,14 @@ public class AccountController : ControllerBase
                 Message = ex.Message
             });
         }
+        catch (FormatException)
+        {
+            return BadRequest(new ResponseMessage<string>()
+            {
+                Success = false,
+                Message = "Id account non valido!"
+            });
+        }
     }
 
     [Authorize]
@@ -137,10 +153,10 @@ public class AccountController : ControllerBase
     {
         // Prendo i claim dell'utente
         var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-        var userClaims = new UserClaims { UserId = Guid.Parse(currentUserId)};
 
         try
         {
+            var userClaims = new UserClaims { UserId = Guid.Parse(currentUserId)};
             await _service.Transfer(transferInfo, userClaims);
 
             return Ok(new ResponseMessage<string>()
@@ -171,6 +187,14 @@ public class AccountController : ControllerBase
             {
                 Success = false,
                 Message = ex.Message
+            });
+        }
+        catch (FormatException)
+        {
+            return BadRequest(new ResponseMessage<string>()
+            {
+                Success = false,
+                Message = "Id account non valido!"
             });
         }
     }
