@@ -31,7 +31,7 @@ public class AuthController : ControllerBase
         _auth = auth;
     }
 
-    [HttpPost("/register")]
+    [HttpPost("register")]
     public async Task<ActionResult<ResponseMessage<string>>> Register(UserDto user)
     {
         try
@@ -66,7 +66,7 @@ public class AuthController : ControllerBase
        - Se il login è un successo ritorna il token
        - Se il login fallisce da un messaggio di errore
     */
-    [HttpPost("/login")]
+    [HttpPost("login")]
     public async Task<ActionResult<ResponseMessage<string>>> Login(UserDto user)
     {
         try

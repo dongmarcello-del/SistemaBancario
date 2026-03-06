@@ -2,6 +2,8 @@ using SistemaBancario.Models;
 using Microsoft.AspNetCore.Mvc;
 using SistemaBancario.DTOs;
 using SistemaBancario.DTOs.Transaction;
+using System.Security.Claims;
+using SistemaBancario.Security;
 
 namespace SistemaBancario.Controllers;
 
@@ -18,16 +20,36 @@ public class TransactionController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<ResponseMessage<List<Transaction>>>> GetTransactions([FromQuery] GetTransactionsDto getTransactionsDto)
+    public async Task<ActionResult<ResponseMessage<List<ResponseTransactionsDto>>>> GetTransactions([FromQuery] GetTransactionsDto getTransactionsDto)
     {
-        List<Transaction> transactions = await _service.GetTransactions(getTransactionsDto);
-
-        return new ResponseMessage<List<Transaction>>
+        var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+        var userClaims = new UserClaims { UserId = Guid.Parse(currentUserId)};
+        try
         {
-            Success = true,
-            Message = "Ecco le tue transazioni",
-            Data = transactions
-        };
+            List<ResponseTransactionsDto> transactions = await _service.GetTransactions(getTransactionsDto, userClaims);
+            return new ResponseMessage<List<ResponseTransactionsDto>>
+            {
+                Success = true,
+                Message = "Ecco le tue transazioni",
+                Data = transactions
+            };
+        } 
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(new ResponseMessage<string>()
+            {
+                Success = false,
+                Message = ex.Message
+            });
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return BadRequest(new ResponseMessage<string>()
+            {
+                Success = false,
+                Message = ex.Message
+            });
+        }
     }
     
 }

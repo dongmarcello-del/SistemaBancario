@@ -12,14 +12,13 @@ namespace SistemaBancario.Guards;
 public class OperationGuard
 {
     /* Se l'account risulta valido lo ritorna */
-    public static async Task<Account> CheckCashOperationValidity(CashOperationInfoDto cashOperation, AppDbContext _context, UserClaims userClaims, CashOperationType cashOperationType)
+    public static Account CheckCashOperationValidity(CashOperationInfoDto cashOperation, Account? account, UserClaims userClaims, CashOperationType cashOperationType)
     {
         var dataValidationResult = OperationDataValidator.ValidateCashOperation(cashOperation, cashOperationType);
 
         if (dataValidationResult != null)
             throw new InvalidOperationException(dataValidationResult.Message);
         
-        var account = await _context.Accounts.FindAsync(cashOperation.AccountId);
         if (account == null)
             throw new KeyNotFoundException("Non è stato trovato nessun account con questo IBAN!");
         
@@ -29,21 +28,17 @@ public class OperationGuard
 
         if (cashOperationType == CashOperationType.Withdraw && cashOperation.Amount > account.Balance)
             throw new InvalidOperationException("Non hai abbastanza denaro in questo account!");
-
+        
         return account;
     }
 
     /* Se i controlli van bene ritorna i due account */
-    public static async Task<(Account senderAccount, Account receiverAccount)> CheckTransferValidity(TransferInfoDto transferInfo, AppDbContext _context, UserClaims userClaims)
+    public static (Account senderAccount, Account receiverAccount) CheckTransferValidity(TransferInfoDto transferInfo, List<Account>? accounts, UserClaims userClaims)
     {
         var dataValidationResult = OperationDataValidator.ValidateTransfer(transferInfo);
 
         if (dataValidationResult != null)
             throw new InvalidOperationException(dataValidationResult.Message);
-
-        var accounts = await _context.Accounts
-            .Where(a => a.Id == transferInfo.SenderAccountId || a.Id == transferInfo.ReceiverAccountId)
-            .ToListAsync();
 
         // Se non trova uno dei due account
         if (accounts.Count != 2)
@@ -61,5 +56,6 @@ public class OperationGuard
             throw new InvalidOperationException("Il mandante non ha abbastanza soldi");
 
         return (senderAccount, receiverAccount);
+
     }
 }

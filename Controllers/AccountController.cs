@@ -21,7 +21,7 @@ public class AccountController : ControllerBase
 
     // Serve ad aggiungere un nuovo account all'utente principale
     [Authorize]
-    [HttpPost("/add")]
+    [HttpPost("add")]
     public async Task<ActionResult<ResponseMessage<string>>> AddAccount(CreateAccountRequestDto account)
     {
         // Prendo i claim dell'utente
@@ -53,7 +53,7 @@ public class AccountController : ControllerBase
     }
 
     [Authorize]
-    [HttpPost("/deposit")]
+    [HttpPost("deposit")]
     public async Task<ActionResult<ResponseMessage<string>>> Deposit(CashOperationInfoDto depositInfo)
     {
         // Prendo i claim dell'utente
@@ -89,7 +89,7 @@ public class AccountController : ControllerBase
     }
 
     [Authorize]
-    [HttpPost("/withdraw")]
+    [HttpPost("withdraw")]
     public async Task<ActionResult<ResponseMessage<string>>> Withdraw(CashOperationInfoDto withdrawInfo)
     {
         // Prendo i claim dell'utente
@@ -133,7 +133,7 @@ public class AccountController : ControllerBase
     }
 
     [Authorize]
-    [HttpPost("/transfer")]
+    [HttpPost("transfer")]
     public async Task<ActionResult<ResponseMessage<string>>> Transfer(TransferInfoDto transferInfo)
     {
         // Prendo i claim dell'utente
@@ -185,7 +185,7 @@ public class AccountController : ControllerBase
     }
 
     [Authorize]
-    [HttpGet("/balance")]
+    [HttpGet("balance")]
     public async Task<ActionResult<ResponseMessage<decimal>>> GetBalance([FromQuery] GetAccountBalanceDto getAccountBalance)
     {
         var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;

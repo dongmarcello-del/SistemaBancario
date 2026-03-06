@@ -54,8 +54,10 @@ public class AccountService : IAccountService
     // Deposita l'ammontare in un account
     public async Task Deposit(CashOperationInfoDto depositInfo, UserClaims userClaims)
     {
+        Console.WriteLine($"Deposit request: AccountId={depositInfo.AccountId}, Amount={depositInfo.Amount}");
+        var account = await _context.Accounts.FindAsync(depositInfo.AccountId);
         /* Faccio i vari controlli, se l'account risulta valido lo ritorna altrimenti lancia un'eccezione */
-        var account = await OperationGuard.CheckCashOperationValidity(depositInfo, _context, userClaims, CashOperationType.Deposit);
+        account = OperationGuard.CheckCashOperationValidity(depositInfo, account, userClaims, CashOperationType.Deposit);
 
         /* Se fai un deposito vale come transazione a se stesso */
         _context.Transactions.Add(new Transaction
@@ -72,8 +74,9 @@ public class AccountService : IAccountService
 
     public async Task Withdraw(CashOperationInfoDto withdrawInfo, UserClaims userClaims)
     {
+        var account = await _context.Accounts.FindAsync(withdrawInfo.AccountId);
         /* Faccio i vari controlli, se l'account risulta valido lo ritorna altrimenti lancia un'eccezione */
-        var account = await OperationGuard.CheckCashOperationValidity(withdrawInfo, _context, userClaims, CashOperationType.Withdraw);
+        account = OperationGuard.CheckCashOperationValidity(withdrawInfo, account, userClaims, CashOperationType.Withdraw);
 
         /* Il prelievo è analogo al deposito ma al posto del segno positivo c'è quello negativo */
         _context.Transactions.Add(new Transaction
@@ -90,8 +93,12 @@ public class AccountService : IAccountService
 
     public async Task Transfer(TransferInfoDto transferInfo, UserClaims userClaims)
     {
+        var accounts = await _context.Accounts
+            .Where(a => a.Id == transferInfo.SenderAccountId || a.Id == transferInfo.ReceiverAccountId)
+            .ToListAsync();
+
         /* Faccio i controlli */
-        var (senderAccount, receiverAccount) = await OperationGuard.CheckTransferValidity(transferInfo, _context, userClaims);
+        var (senderAccount, receiverAccount) = OperationGuard.CheckTransferValidity(transferInfo, accounts, userClaims);
 
         /* Transferimento dei soldi */
         senderAccount.Balance -= transferInfo.Amount;
@@ -112,11 +119,14 @@ public class AccountService : IAccountService
 
     public async Task<decimal> GetBalance(GetAccountBalanceDto getAccountBalanceDto, UserClaims userClaims)
     {
-        var accountDesired = await InfoRetrevierGuard.EnsureRetrievable(getAccountBalanceDto, _context, userClaims);
+
+        var account = await _context.Accounts.FindAsync(getAccountBalanceDto.AccountId);
+
+        account = InfoRetrevierGuard.EnsureRetrievable(account, userClaims);
 
         // Se è null ritorno il balance attuale
         if (getAccountBalanceDto.Date == null) 
-            return accountDesired.Balance;
+            return account.Balance;
         
         /// Transazione
         /// Sender: accountId, Receiver: accountId Amount > 0 Deposito (positivo per accountId)
