@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SistemaBancario.Data;
-using SistemaBancario.DTOs;
+using SistemaBancario.DTOs.Transaction;
 using SistemaBancario.Models;
 using SistemaBancario.Enums;
 

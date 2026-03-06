@@ -1,4 +1,4 @@
-using SistemaBancario.DTOs;
+using SistemaBancario.DTOs.Auth;
 
 namespace SistemaBancario.Services;
 

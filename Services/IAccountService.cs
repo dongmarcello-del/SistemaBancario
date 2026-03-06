@@ -1,6 +1,6 @@
 namespace SistemaBancario.Services;
 
-using SistemaBancario.DTOs;
+using SistemaBancario.DTOs.Account;
 using SistemaBancario.Security;
 
 public interface IAccountService

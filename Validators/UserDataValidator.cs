@@ -1,5 +1,6 @@
 using SistemaBancario.DTOs;
 using System.Net.Mail;
+using SistemaBancario.DTOs.Auth;
 
 namespace SistemaBancario.Validators;
 

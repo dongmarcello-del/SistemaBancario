@@ -1,4 +1,4 @@
-namespace SistemaBancario.DTOs;
+namespace SistemaBancario.DTOs.Auth;
 
 /* 
     Questo sarà il DTO principale per l'autenticazione

@@ -1,4 +1,4 @@
-namespace SistemaBancario.DTOs;
+namespace SistemaBancario.DTOs.Account;
 
 // Riguarda le operazioni che riguardano i contanti (deposito e prelievo)
 

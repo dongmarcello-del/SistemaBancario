@@ -1,4 +1,4 @@
-namespace SistemaBancario.DTOs;
+namespace SistemaBancario.DTOs.Account;
 public class TransferInfoDto
 {
     public Guid SenderAccountId { get; set; }

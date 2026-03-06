@@ -1,5 +1,5 @@
 using SistemaBancario.Data;
-using SistemaBancario.DTOs;
+using SistemaBancario.DTOs.Account;
 using SistemaBancario.Models;
 using SistemaBancario.Security;
 using SistemaBancario.Guards;

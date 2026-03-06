@@ -1,5 +1,6 @@
 using SistemaBancario.DTOs;
 using SistemaBancario.Enums;
+using SistemaBancario.DTOs.Account;
 
 namespace SistemaBancario.Validators;
 

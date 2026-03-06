@@ -1,6 +1,6 @@
 using SistemaBancario.Enums;
 
-namespace SistemaBancario.DTOs;
+namespace SistemaBancario.DTOs.Transaction;
 
 /// <summary>
 /// 

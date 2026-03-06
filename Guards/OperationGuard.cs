@@ -5,6 +5,7 @@ using SistemaBancario.Security;
 using SistemaBancario.Enums;
 using Microsoft.EntityFrameworkCore;
 using SistemaBancario.Validators;
+using SistemaBancario.DTOs.Account;
 
 namespace SistemaBancario.Guards;
 

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using SistemaBancario.Data;
-using SistemaBancario.DTOs;
+using SistemaBancario.DTOs.Auth;
 using SistemaBancario.Security;
 using SistemaBancario.Models;
 using SistemaBancario.Validators;

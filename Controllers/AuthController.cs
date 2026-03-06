@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using SistemaBancario.DTOs;
+using SistemaBancario.DTOs.Auth;
 using SistemaBancario.Models;
 using SistemaBancario.Services;
 

@@ -2,6 +2,7 @@ using SistemaBancario.Data;
 using SistemaBancario.DTOs;
 using SistemaBancario.Models;
 using SistemaBancario.Security;
+using SistemaBancario.DTOs.Account;
 
 namespace SistemaBancario.Guards;
 public class InfoRetrevierGuard

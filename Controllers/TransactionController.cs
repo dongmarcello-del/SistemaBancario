@@ -1,6 +1,7 @@
 using SistemaBancario.Models;
 using Microsoft.AspNetCore.Mvc;
 using SistemaBancario.DTOs;
+using SistemaBancario.DTOs.Transaction;
 
 namespace SistemaBancario.Controllers;
 

@@ -1,9 +1,10 @@
 using SistemaBancario.Enums;
 
-namespace SistemaBancario.DTOs;
+namespace SistemaBancario.DTOs.Transaction;
 
 /// <summary>
 /// Domani usare questo formato al posto di List<Transaction> -> List<ResponseTransactionsDto>
+/// e suddividere in sottogruppi i dto
 /// </summary>
 
 public class ResponseTransactionsDto
