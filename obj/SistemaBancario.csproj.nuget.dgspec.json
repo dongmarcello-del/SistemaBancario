@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\MarcelloDong\\SistemaBancario\\SistemaBancario\\SistemaBancario.csproj": {}
+    "C:\\Users\\huawei\\Desktop\\SistemaBancario\\SistemaBancario.csproj": {}
   },
   "projects": {
-    "C:\\Users\\MarcelloDong\\SistemaBancario\\SistemaBancario\\SistemaBancario.csproj": {
+    "C:\\Users\\huawei\\Desktop\\SistemaBancario\\SistemaBancario.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\MarcelloDong\\SistemaBancario\\SistemaBancario\\SistemaBancario.csproj",
+        "projectUniqueName": "C:\\Users\\huawei\\Desktop\\SistemaBancario\\SistemaBancario.csproj",
         "projectName": "SistemaBancario",
-        "projectPath": "C:\\Users\\MarcelloDong\\SistemaBancario\\SistemaBancario\\SistemaBancario.csproj",
-        "packagesPath": "C:\\Users\\MarcelloDong\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\MarcelloDong\\SistemaBancario\\SistemaBancario\\obj\\",
+        "projectPath": "C:\\Users\\huawei\\Desktop\\SistemaBancario\\SistemaBancario.csproj",
+        "packagesPath": "C:\\Users\\huawei\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\huawei\\Desktop\\SistemaBancario\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\MarcelloDong\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\huawei\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net10.0"
@@ -88,7 +88,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.103/PortableRuntimeIdentifierGraph.json",
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.102/PortableRuntimeIdentifierGraph.json",
           "packagesToPrune": {
             "Microsoft.AspNetCore": "(,10.0.32767]",
             "Microsoft.AspNetCore.Antiforgery": "(,10.0.32767]",
