@@ -1,36 +1,33 @@
-# Sistema Bancario
+# 🏦 Sistema Bancario
 
-Progetto di esempio per la gestione di conti bancari con operazioni di deposito, prelievo, trasferimento, visualizzazione saldo e lista transazioni.
+Progetto di esempio per la gestione di conti bancari, con supporto a depositi, prelievi, trasferimenti, visualizzazione del saldo e cronologia delle transazioni.
 
-Il repository è pensato per **sviluppo e test locale**, non per utilizzo pubblico.
+---
 
 ## Stack tecnologico
 
-### Backend
-- ASP.NET Core
-- Entity Framework Core
-- SQL Server
-- JWT Authentication
+| Layer | Tecnologie |
+|---|---|
+| **Backend** | ASP.NET Core, Entity Framework Core, SQL Server, JWT Authentication |
+| **Frontend** | React, TypeScript, Vite |
 
-### Frontend
-- React
-- TypeScript
-- Vite
+---
 
 ## Prerequisiti
 
 Assicurarsi di avere installato:
 
-- .NET SDK
-- Node.js
-- npm
-- SQL Server
+- [.NET SDK](https://dotnet.microsoft.com/download)
+- [Node.js](https://nodejs.org/) e npm
+- [SQL Server](https://www.microsoft.com/sql-server)
+
+---
 
 ## Setup
 
 ### 1. Configurazione backend
 
-Nel file `appsettings.json` aggiungere questa configurazione(o modificata):
+Nel file `appsettings.json`, aggiungere o aggiornare la seguente configurazione:
 
 ```json
 {
@@ -51,44 +48,61 @@ Nel file `appsettings.json` aggiungere questa configurazione(o modificata):
   },
   "AllowedHosts": "*"
 }
-2. Creazione del database
+```
 
-Dalla cartella del backend eseguire:
+### 2. Creazione del database
 
+Dalla cartella del backend, eseguire:
+
+```bash
 dotnet ef database update
+```
 
-Questo comando crea il database e applica le migrazioni.
+Questo comando crea il database e applica tutte le migrazioni.
 
-3. Avvio backend
+### 3. Avvio del backend
+
+```bash
 dotnet run
-4. Avvio frontend
+```
 
-Dalla cartella del frontend eseguire:
+### 4. Avvio del frontend
 
+Dalla cartella del frontend:
+
+```bash
 npm install
 npm run dev
+```
 
-Il frontend sarà disponibile su:
+Il frontend sarà disponibile su: **http://localhost:5173**
 
-http://localhost:5173
-Test dell'applicazione
+---
 
-Per testare la dashboard usare un URL nel formato:
+## Test dell'applicazione
 
+Per testare la dashboard, aprire un URL nel seguente formato:
+
+```
 http://localhost:5173/home/{accountId}
+```
 
-Esempio:
+**Esempio:**
 
+```
 http://localhost:5173/home/9691BB7E-6BFA-4073-AB56-24280E0430C9
+```
 
-Per il test è necessario inserire nell'URL l'ID di un conto bancario esistente.
+> L'`accountId` deve corrispondere a un conto bancario esistente nel database.
 
-Endpoint API
+---
 
-Per vedere e testare gli endpoint del backend usare Swagger dopo aver avviato il progetto backend.
+## API — Documentazione Swagger
 
-Aprire nel browser l'indirizzo dello Swagger esposto dall'applicazione, ad esempio:
+Dopo aver avviato il backend, è possibile esplorare e testare tutti gli endpoint tramite Swagger:
 
+```
 http://localhost:<porta>/swagger
+```
 
-Da lì è possibile vedere tutti gli endpoint disponibili e provarli direttamente.
+L'interfaccia Swagger permette di visualizzare tutti gli endpoint disponibili e di eseguire richieste direttamente dal browser.
