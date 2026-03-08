@@ -27,6 +27,14 @@ builder.Services.AddCors(options =>
     });
 });
 
+// Se i campi del json sono null non scriverli proprio
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.DefaultIgnoreCondition =
+            System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
+    });
+
 // Aggiungo nello swagger il bottone per fare le richieste con autenticazione
 builder.Services.AddSwaggerGen(c =>
 {

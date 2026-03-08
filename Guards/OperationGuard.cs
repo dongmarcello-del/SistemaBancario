@@ -12,7 +12,7 @@ namespace SistemaBancario.Guards;
 public class OperationGuard
 {
     /* Se l'account risulta valido lo ritorna */
-    public static Account CheckCashOperationValidity(CashOperationInfoDto cashOperation, Account? account, UserClaims userClaims, CashOperationType cashOperationType)
+    public static Account CheckCashOperationValidity(CashOperationInfoDto cashOperation, Account? account, UserClaims userClaims, TransactionType cashOperationType)
     {
         var dataValidationResult = OperationDataValidator.ValidateCashOperation(cashOperation, cashOperationType);
 
@@ -26,7 +26,7 @@ public class OperationGuard
         if (userClaims.UserId != account.UserId)
             throw new UnauthorizedAccessException("Questo account non ti appartiene!");
 
-        if (cashOperationType == CashOperationType.Withdraw && cashOperation.Amount > account.Balance)
+        if (cashOperationType == TransactionType.Withdraw && cashOperation.Amount > account.Balance)
             throw new InvalidOperationException("Non hai abbastanza denaro in questo account!");
         
         return account;

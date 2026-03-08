@@ -12,5 +12,6 @@ namespace SistemaBancario.DTOs.Transaction;
 public class GetTransactionsDto
 {
     public Guid AccountId { get; set; }
-    public required CashOperationType cashOperationType { get; set; } 
+    public TransactionType? cashOperationType { get; set; } 
+    public int? Limit { get; set; }
 }

@@ -25,11 +25,11 @@ public class OperationDataValidator
         return null;
     }
 
-    public static ResponseMessage<string>? ValidateCashOperation(CashOperationInfoDto cashOperation, CashOperationType cashOperationType)
+    public static ResponseMessage<string>? ValidateCashOperation(CashOperationInfoDto cashOperation, TransactionType cashOperationType)
     {
-        if (cashOperation.Amount <= 0 && cashOperationType == CashOperationType.Deposit)
+        if (cashOperation.Amount <= 0 && cashOperationType == TransactionType.Deposit)
         {
-            string verb = cashOperationType == CashOperationType.Deposit ? "depositare" : "prelevare";
+            string verb = cashOperationType == TransactionType.Deposit ? "depositare" : "prelevare";
             return new ResponseMessage<string> {
                 Success = false,
                 Message = $"Non puoi {verb} un'ammontare negativo o nullo!"

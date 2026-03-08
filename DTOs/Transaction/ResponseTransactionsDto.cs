@@ -12,5 +12,7 @@ public class ResponseTransactionsDto
     public int Id { get; set; }
     public DateTime Date { get; set; }
     public decimal Amount { get; set; }
-    public CashOperationType cashOperationType { get; set; }
+    public Guid? SenderAccountId { get; set; }
+    public Guid? ReceiverAccountId { get; set; }
+    public string? cashOperationTypeString { get; set; }
 }

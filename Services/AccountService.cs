@@ -57,7 +57,7 @@ public class AccountService : IAccountService
         Console.WriteLine($"Deposit request: AccountId={depositInfo.AccountId}, Amount={depositInfo.Amount}");
         var account = await _context.Accounts.FindAsync(depositInfo.AccountId);
         /* Faccio i vari controlli, se l'account risulta valido lo ritorna altrimenti lancia un'eccezione */
-        account = OperationGuard.CheckCashOperationValidity(depositInfo, account, userClaims, CashOperationType.Deposit);
+        account = OperationGuard.CheckCashOperationValidity(depositInfo, account, userClaims, TransactionType.Deposit);
 
         /* Se fai un deposito vale come transazione a se stesso */
         _context.Transactions.Add(new Transaction
@@ -76,7 +76,7 @@ public class AccountService : IAccountService
     {
         var account = await _context.Accounts.FindAsync(withdrawInfo.AccountId);
         /* Faccio i vari controlli, se l'account risulta valido lo ritorna altrimenti lancia un'eccezione */
-        account = OperationGuard.CheckCashOperationValidity(withdrawInfo, account, userClaims, CashOperationType.Withdraw);
+        account = OperationGuard.CheckCashOperationValidity(withdrawInfo, account, userClaims, TransactionType.Withdraw);
 
         /* Il prelievo è analogo al deposito ma al posto del segno positivo c'è quello negativo */
         _context.Transactions.Add(new Transaction

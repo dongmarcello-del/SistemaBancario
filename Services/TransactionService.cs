@@ -21,19 +21,34 @@ class TransactionService : ITransactionService
 
         account = InfoRetrevierGuard.EnsureRetrievable(account, userClaims);
 
-        List<ResponseTransactionsDto> transactions = _context.Transactions.Where(
-            t => t.ReceiverAccountId == account.Id &&
-            t.SenderAccountId == account.Id && 
-            getTransactionsDto.cashOperationType == CashOperationType.Deposit ? 
-            (t.Amount > 0) : // Se è maggiore di 0 è un versamento
-            (t.Amount < 0) // Se è minore di 0 è un prelievo
-        ).Select(a => new ResponseTransactionsDto
+        IQueryable<Transaction> query = _context.Transactions
+                                        .Where(
+                                            t => t.ReceiverAccountId == account.Id || 
+                                            t.SenderAccountId == account.Id
+                                        );
+
+        query = getTransactionsDto.cashOperationType switch
         {
-            Id = a.Id, 
-            Date = a.Date,
-            Amount = a.Amount,
-            cashOperationType = getTransactionsDto.cashOperationType
-        }).ToList();
+            TransactionType.Deposit => query.Where(t => t.ReceiverAccountId == account.Id && t.SenderAccountId == account.Id && t.Amount > 0),
+            TransactionType.Withdraw => query.Where(t => t.ReceiverAccountId == account.Id && t.SenderAccountId == account.Id && t.Amount < 0),
+            TransactionType.Transfer => query.Where(t => t.ReceiverAccountId != t.SenderAccountId),
+            _ => query
+        };
+
+        var transactions = query
+            .Take(getTransactionsDto.Limit ?? int.MaxValue)
+            .Select(a => new ResponseTransactionsDto
+            {
+                Id = a.Id,
+                Date = a.Date,
+                Amount = a.Amount,
+                SenderAccountId = a.SenderAccountId == a.ReceiverAccountId ? null : a.SenderAccountId, 
+                ReceiverAccountId = a.ReceiverAccountId == a.SenderAccountId ? null : a.ReceiverAccountId,
+                cashOperationTypeString = a.SenderAccountId == a.ReceiverAccountId
+                ? (a.Amount >= 0 ? "Deposit" : "Withdraw")
+                : "Transfer"
+            })
+            .ToList();
 
         return transactions;
     }

@@ -4,6 +4,7 @@ using SistemaBancario.DTOs;
 using SistemaBancario.DTOs.Transaction;
 using System.Security.Claims;
 using SistemaBancario.Security;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SistemaBancario.Controllers;
 
@@ -19,6 +20,7 @@ public class TransactionController : ControllerBase
         _service = service;
     }
 
+    [Authorize]
     [HttpGet]
     public async Task<ActionResult<ResponseMessage<List<ResponseTransactionsDto>>>> GetTransactions([FromQuery] GetTransactionsDto getTransactionsDto)
     {
