@@ -27,7 +27,7 @@ public class OperationDataValidator
 
     public static ResponseMessage<string>? ValidateCashOperation(CashOperationInfoDto cashOperation, TransactionType cashOperationType)
     {
-        if (cashOperation.Amount <= 0 && cashOperationType == TransactionType.Deposit)
+        if (cashOperation.Amount <= 0)
         {
             string verb = cashOperationType == TransactionType.Deposit ? "depositare" : "prelevare";
             return new ResponseMessage<string> {

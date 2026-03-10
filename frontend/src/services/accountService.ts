@@ -2,6 +2,7 @@ import type { cashOperationDto } from "../DTOs/account/cashOperationDto";
 import type { ResponseMessage } from "../DTOs/ResponseMessage";
 import {
     ACCOUNT_BALANCE_ENDPOINT,
+    ACCOUNT_IDS_ENDPOINT,
     ACCOUNT_TRANSACTIONS_ENDPOINT,
     DEPOSIT_ENDPOINT,
     WITHDRAW_ENDPOINT
@@ -38,6 +39,16 @@ export async function getLast20Transaction(accountId: string | undefined): Promi
 
     return apiFetch(
         ACCOUNT_TRANSACTIONS_ENDPOINT + `?AccountId=${accountId}&Limit=20`,
+        {
+            method: "GET"
+        }
+    );
+}
+
+export async function getAccountsId(): Promise<ResponseMessage<any>> {
+
+    return apiFetch(
+        ACCOUNT_IDS_ENDPOINT,
         {
             method: "GET"
         }

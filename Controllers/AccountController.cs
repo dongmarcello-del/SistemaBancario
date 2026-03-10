@@ -26,7 +26,7 @@ public class AccountController : ControllerBase
     {
         // Prendo i claim dell'utente
         var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-        var userClaims = new UserClaims { UserId = Guid.Parse(currentUserId)};
+        var userClaims = new UserClaims { UserId = Guid.Parse(currentUserId) };
 
         // Id dell'utente corrente preso dal claim
         try
@@ -41,7 +41,7 @@ public class AccountController : ControllerBase
                 Success = true,
                 Message = "Account aggiunto con successo!"
             });
-        } 
+        }
         catch (InvalidDataException ex)
         {
             return BadRequest(new ResponseMessage<string>()
@@ -61,7 +61,7 @@ public class AccountController : ControllerBase
 
         try
         {
-            var userClaims = new UserClaims { UserId = Guid.Parse(currentUserId)};
+            var userClaims = new UserClaims { UserId = Guid.Parse(currentUserId) };
             await _service.Deposit(depositInfo, userClaims);
 
             return Ok(new ResponseMessage<string>()
@@ -70,7 +70,7 @@ public class AccountController : ControllerBase
                 Message = "Deposito avvenuto con successo!"
             });
         }
-        catch (InvalidDataException ex)
+        catch (Exception ex) when (ex is InvalidDataException || ex is InvalidOperationException)
         {
             return BadRequest(new ResponseMessage<string>()
             {
@@ -94,7 +94,7 @@ public class AccountController : ControllerBase
     {
         // Prendo i claim dell'utente
         var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-        var userClaims = new UserClaims { UserId = Guid.Parse(currentUserId)};
+        var userClaims = new UserClaims { UserId = Guid.Parse(currentUserId) };
 
         try
         {
@@ -138,7 +138,7 @@ public class AccountController : ControllerBase
     {
         // Prendo i claim dell'utente
         var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-        var userClaims = new UserClaims { UserId = Guid.Parse(currentUserId)};
+        var userClaims = new UserClaims { UserId = Guid.Parse(currentUserId) };
 
         try
         {
@@ -189,7 +189,7 @@ public class AccountController : ControllerBase
     public async Task<ActionResult<ResponseMessage<decimal>>> GetBalance([FromQuery] GetAccountBalanceDto getAccountBalance)
     {
         var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-        var userClaims = new UserClaims { UserId = Guid.Parse(currentUserId)};
+        var userClaims = new UserClaims { UserId = Guid.Parse(currentUserId) };
 
         try
         {
@@ -218,5 +218,19 @@ public class AccountController : ControllerBase
                 Message = ex.Message
             });
         }
+    }
+
+    [Authorize]
+    [HttpGet("account_ids")]
+    public async Task<ActionResult<ResponseMessage<List<Guid>>>> GetAccountIds()
+    {
+        var accountsId = await _service.GetAccountsId();
+
+        return Ok(new ResponseMessage<List<Guid>>()
+        {
+            Success = true,
+            Message = "Ecco l'id dei tuoi account",
+            Data = accountsId
+        });
     }
 }

@@ -16,7 +16,7 @@ export default function Login() {
                 onSubmit={login}
                 dataHandler={(data) => {
                     localStorage.setItem("token", data);
-                    navigate("/home")
+                    navigate("/dashboard")
                 }}
                 submitText="Login"
            />

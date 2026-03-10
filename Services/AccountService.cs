@@ -146,4 +146,13 @@ public class AccountService : IAccountService
                                             ).SumAsync(t => t.ReceiverAccountId == getAccountBalanceDto.AccountId ? t.Amount : -t.Amount);
         return balance;
     }
+
+    public async Task<List<Guid>> GetAccountsId()
+    {
+        var accountsId = await _context.Accounts
+                .Select(a => a.Id)
+                .ToListAsync();
+
+        return accountsId;
+    }
 }

@@ -3,6 +3,9 @@ using Microsoft.OpenApi.Models;
 using SistemaBancario.Data;
 using SistemaBancario.Security;
 using SistemaBancario.Services;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using SistemaBancario.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -74,6 +77,7 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddControllersWithViews();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 
 var app = builder.Build();
 if (!app.Environment.IsDevelopment())

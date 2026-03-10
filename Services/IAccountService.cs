@@ -10,4 +10,5 @@ public interface IAccountService
     Task Withdraw(CashOperationInfoDto withdrawInfo, UserClaims userClaims);
     Task Transfer(TransferInfoDto transferInfo, UserClaims userClaims);
     Task<decimal> GetBalance(GetAccountBalanceDto getAccountBalance, UserClaims userClaims);
+    Task<List<Guid>> GetAccountsId();
 }

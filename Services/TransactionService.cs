@@ -36,6 +36,7 @@ class TransactionService : ITransactionService
         };
 
         var transactions = query
+            .OrderByDescending(a => a.Date)
             .Take(getTransactionsDto.Limit ?? int.MaxValue)
             .Select(a => new ResponseTransactionsDto
             {
