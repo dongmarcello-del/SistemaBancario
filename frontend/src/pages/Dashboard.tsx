@@ -12,18 +12,16 @@ export default function Dashboard() {
     const params = useParams();
     const accountId = params.idAccount;
 
-    useEffect(() => {
-        async function loadBalance() {
-            const balance = await getCurrentBalance(accountId);
-            setBalance(balance.data);
-        }
-        loadBalance();
-        async function loadLast20Transactions() {
-            const last20Transactions = await getLast20Transaction(accountId);
-            setTransactions(last20Transactions.data);
-        }
-        loadLast20Transactions();
+    async function loadData() {
+        const balanceRes = await getCurrentBalance(accountId);
+        setBalance(balanceRes.data);
 
+        const txRes = await getLast20Transaction(accountId);
+        setTransactions(txRes.data);
+    }
+
+    useEffect(() => {
+        loadData();
     }, [accountId]); // Si mette per sicurezza
 
     return (
@@ -35,7 +33,9 @@ export default function Dashboard() {
                     { name: "amount", type: "number", placeholder: "deposito" },
                 ]}
                 onSubmit={async (values) => {
-                    return deposit({ accountId, ...values });
+                    const res = await deposit({ accountId, ...values });
+                    await loadData();
+                    return res; 
                 }}
                 dataHandler={undefined}
                 submitText="+"
@@ -45,12 +45,14 @@ export default function Dashboard() {
                     { name: "amount", type: "number", placeholder: "prelievo" },
                 ]}
                 onSubmit={async (values) => {
-                    return withdraw({ accountId, ...values });
+                    const res = await withdraw({ accountId, ...values });
+                    await loadData();
+                    return res; 
                 }}
                 dataHandler={undefined}
                 submitText="-"
             />
-            <TransactionTable transactions={transactions}/>
+            <TransactionTable transactions={transactions} />
         </>
     )
 }
