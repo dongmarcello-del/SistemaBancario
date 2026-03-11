@@ -1,37 +1,27 @@
-using SistemaBancario.DTOs;
-using System.Net.Mail;
+using FluentValidation;
 using SistemaBancario.DTOs.Auth;
+using System.Net.Mail;
 
 namespace SistemaBancario.Validators;
 
-public class UserDataValidator
+public class UserDataValidator : AbstractValidator<UserDto>
 {
-    public static ResponseMessage<string>? Validate(UserDto user)
+    public UserDataValidator()
     {
-        if (string.IsNullOrWhiteSpace(user.Email) || string.IsNullOrWhiteSpace(user.Password)) return new ResponseMessage<string> {
-            Success = false,
-            Message = "Devi inserire la mail o la password"
-        };
+        RuleFor(x => x.Email)
+            .NotEmpty().WithMessage("Devi inserire la mail")
+            .Must(IsValidEmail).WithMessage("Devi inserire una mail corretta!");
 
-        if (!IsValidEmail(user.Email)) return new ResponseMessage<string> {
-            Success = false,
-            Message = "Devi inserire una mail corretta!"
-        };
+        RuleFor(x => x.Password)
+            .NotEmpty().WithMessage("Devi inserire la password")
+            .MinimumLength(8).WithMessage("Password troppo corta! Min. 8 caratteri");
+    }
 
-        if (user.Password.Length < 8) return new ResponseMessage<string> {
-            Success = false,
-            Message = "Password troppo corta! Min. 8 caratteri"
-        };
-
-        return null;
-    } 
-
-    private static bool IsValidEmail(string email)
+    private bool IsValidEmail(string email)
     {
         try
         {
             var addr = new MailAddress(email);
-
             return addr.Address == email;
         }
         catch

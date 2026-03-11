@@ -3,42 +3,60 @@ using Microsoft.OpenApi.Models;
 using SistemaBancario.Data;
 using SistemaBancario.Security;
 using SistemaBancario.Services;
-using FluentValidation;
 using FluentValidation.AspNetCore;
 using SistemaBancario.Validators;
+using Microsoft.AspNetCore.Mvc;
+using SistemaBancario.DTOs;
+using FluentValidation;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Passo la stringa di connessione ad AppDbContext
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
 
-// Aggiunta dei servizi
 builder.Services.AddAuthServices(builder.Configuration);
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
 
-// Abilito i CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
         policy
-            .WithOrigins("http://localhost:5173") 
+            .WithOrigins("http://localhost:5173")
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
 });
 
-// Se i campi del json sono null non scriverli proprio
+// ✅ UNA sola chiamata con tutto concatenato
 builder.Services.AddControllers()
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        options.InvalidModelStateResponseFactory = context =>
+        {
+            var firstError = context.ModelState
+                .Where(x => x.Value?.Errors.Count > 0)
+                .Select(x => x.Value!.Errors.First())
+                .FirstOrDefault();
+
+            var message = firstError?.ErrorMessage ?? "Errore di validazione";
+
+            return new BadRequestObjectResult(new ResponseMessage<object>
+            {
+                Success = false,
+                Message = message
+            });
+        };
+    })
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.DefaultIgnoreCondition =
             System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
     });
 
-// Aggiungo nello swagger il bottone per fare le richieste con autenticazione
+builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
@@ -54,8 +72,7 @@ builder.Services.AddSwaggerGen(c =>
     };
 
     c.AddSecurityDefinition("Bearer", securityScheme);
-
-    var securityRequirement = new OpenApiSecurityRequirement
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
             new OpenApiSecurityScheme
@@ -68,18 +85,14 @@ builder.Services.AddSwaggerGen(c =>
             },
             Array.Empty<string>()
         }
-    };
-
-    c.AddSecurityRequirement(securityRequirement);
+    });
 });
 
-// Add services to the container.
-builder.Services.AddControllersWithViews();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddValidatorsFromAssemblyContaining<UserDataValidator>();
 
 var app = builder.Build();
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseHsts();
@@ -94,15 +107,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 app.UseCors("AllowFrontend");
-
 app.UseAuthorization();
-
-app.MapStaticAssets();
-
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
-
+app.MapControllers(); 
 
 app.Run();

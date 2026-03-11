@@ -29,13 +29,6 @@ public class AuthService : IAuthService
     public async Task Register(UserDto user)
     {
 
-        /* Controlli sulla registrazione lato (dominio), possono essere trasferiti come guard */
-
-        var validationError = UserDataValidator.Validate(user);
-
-        if (validationError != null)
-            throw new ArgumentException(validationError.Message);
-
         /* Controlli sulla registrazione lato (DB) */
         var exists = await _dbContext.Users.AnyAsync(u => u.Email == user.Email);
 

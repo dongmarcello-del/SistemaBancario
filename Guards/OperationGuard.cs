@@ -13,12 +13,7 @@ public class OperationGuard
 {
     /* Se l'account risulta valido lo ritorna */
     public static Account CheckCashOperationValidity(CashOperationInfoDto cashOperation, Account? account, UserClaims userClaims, TransactionType cashOperationType)
-    {
-        var dataValidationResult = OperationDataValidator.ValidateCashOperation(cashOperation, cashOperationType);
-
-        if (dataValidationResult != null)
-            throw new InvalidOperationException(dataValidationResult.Message);
-        
+    {   
         if (account == null)
             throw new KeyNotFoundException("Non è stato trovato nessun account con questo IBAN!");
         
@@ -35,10 +30,6 @@ public class OperationGuard
     /* Se i controlli van bene ritorna i due account */
     public static (Account senderAccount, Account receiverAccount) CheckTransferValidity(TransferInfoDto transferInfo, List<Account>? accounts, UserClaims userClaims)
     {
-        var dataValidationResult = OperationDataValidator.ValidateTransfer(transferInfo);
-
-        if (dataValidationResult != null)
-            throw new InvalidOperationException(dataValidationResult.Message);
 
         // Se non trova uno dei due account
         if (accounts.Count != 2)
