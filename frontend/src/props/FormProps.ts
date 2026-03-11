@@ -6,4 +6,5 @@ export type FormProps = {
     onSubmit: (data: any) => Promise<ResponseMessage<any>>;
     dataHandler?: (data: any) => void | null;
     submitText?: string;
+    title?: string;
 }
